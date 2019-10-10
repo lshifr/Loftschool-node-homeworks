@@ -8,7 +8,7 @@ Homeworks for the node.js course in LoftSchool
 
     git clone https://github.com/lshifr/Loftschool-node-homeworks.git
     cd Loftschool-node-homeworks
-    git checkout homeworks-1
+    git checkout homework-1
     npm install
     
 ### Использование
