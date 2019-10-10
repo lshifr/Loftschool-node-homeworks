@@ -16,25 +16,33 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
 
     const getNewFileName = (filename, dir) => path.join(dir, path.basename(filename));
 
+
+    // Создаем монитор асинхронных задач для основной операции копирования файлов
     const taskMonitor = wrapper.createTaskMonitor(
         taskCount => {
-            if(verbose){
-                console.log(`Current task count: ${taskCount}`)
+            if (verbose) {
+                // За этим довольно интересно наблюдать в режиме verbose
+                console.log(`Current async task count: ${taskCount}`)
             }
         },
         () => {
-            if(verbose){
+            // Все операции копирования файлов завершены, можно удалять исходный каталог
+            if (verbose) {
                 console.log("All copying tasks finished");
             }
-            if(deleteOriginalFolder && (defaultSource !== source)){
-                if(verbose){
+            if (deleteOriginalFolder && (defaultSource !== source)) {
+                if (verbose) {
                     console.log(`Deleting original folder ${source}`);
                 }
+                // Я не стал заморачиваться с асинхронным рекурсивным удалением папки,
+                // чтобы не перегружать код.
                 deleteFolderRecursiveSync(sourceDir)
             }
         }
     );
 
+    // Асинхронный рекурсивный проход исходной папки с созданием новой структуры
+    // файлов
     traverse(sourceDir, (err, filename) => {
         if (err) {
             cb(err)
@@ -44,8 +52,8 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
                     cb(err);
                 } else {
                     const newfile = getNewFileName(filename, dirpath);
-                    if(verbose){
-                        console.log(`Copying file ${filename} into ${newfile}`);
+                    if (verbose) {
+                        console.log(`Copying file ${path.basename(filename)}`);
                     }
                     wrapper.wrap(copyFile)(filename, newfile, err => {
                         if (err) cb(err);

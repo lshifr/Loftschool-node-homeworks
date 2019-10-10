@@ -1,14 +1,16 @@
 const categorizeFiles = require("./categorize");
 
+// Исходная и конечная папки по умолчанию
 const defaultSource = __dirname + "/SampleFiles/Westerns";
 const defaultDestination = __dirname + "/SampleFiles/NewFiles";
 
+// Аргументы командной строки
 const argv = require('yargs')
     .option('source', {
         alias: 's',
         description: 'Source folder'
-        })
-    .option('destination',{
+    })
+    .option('destination', {
         alias: 'd',
         description: 'Destination folder'
     })
@@ -29,6 +31,7 @@ const deleteOriginalFolder = argv['delete-source'];
 const verbose = argv.verbose;
 
 
+// Вызов основной функции
 categorizeFiles(
     source,
     destination,
