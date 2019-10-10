@@ -81,7 +81,7 @@ exports.copyFile = (src, dest, callback) => {
     stream,
     readListenerAdapter.consume,
     readListenerAdapter.check,
-    50
+    10
   );
 
   stream.on("end", () => ws.end(Buffer.from([])));
