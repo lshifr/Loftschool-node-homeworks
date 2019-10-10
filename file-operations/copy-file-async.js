@@ -1,4 +1,5 @@
 const fs = require("fs");
+const wrapper = require("../common/callwrapper");
 
 class FileCopyError extends Error {
     constructor(message) {
@@ -83,31 +84,33 @@ const readListenerAdapterFactory = writeStream => {
 /*
 **  Асинхронно копирут файл src в dest
 */
-exports.copyFile = (src, dest, callback) => {
-    const stream = fs.createReadStream(src);
-    const ws = fs.createWriteStream(dest);
+exports.copyFile = wrapper.wrap(
+    (src, dest, callback) => {
+        const stream = fs.createReadStream(src);
+        const ws = fs.createWriteStream(dest);
 
-    // Создаем адаптер для readListener
-    const readListenerAdapter = readListenerAdapterFactory(ws);
+        // Создаем адаптер для readListener
+        const readListenerAdapter = readListenerAdapterFactory(ws);
 
-    // Coздаем обработчик на событие 'readable'
-    const readListener = readListenerFactory(
-        stream,
-        readListenerAdapter.consume,
-        readListenerAdapter.check,
-        10
-    );
+        // Coздаем обработчик на событие 'readable'
+        const readListener = readListenerFactory(
+            stream,
+            readListenerAdapter.consume,
+            readListenerAdapter.check,
+            10
+        );
 
-    // Вешаем обработчики на 'end', 'readable' и 'error' для потока ввода,
-    // и 'finish', 'error' для потока вывода. Это автоматически запускает
-    // процесс копирования.
-    stream.on("end", () => ws.end(Buffer.from([])));
-    stream.on("readable", readListener);
-    ws.on("finish", () => callback(null, dest));
-    stream.on("error", err => {
-        callback(new FileCopyError(err.message));
-    });
-    ws.on("error", err => {
-        callback(new FileCopyError(err.message));
-    });
-};
+        // Вешаем обработчики на 'end', 'readable' и 'error' для потока ввода,
+        // и 'finish', 'error' для потока вывода. Это автоматически запускает
+        // процесс копирования.
+        stream.on("end", () => ws.end(Buffer.from([])));
+        stream.on("readable", readListener);
+        ws.on("finish", () => callback(null, dest));
+        stream.on("error", err => {
+            callback(new FileCopyError(err.message));
+        });
+        ws.on("error", err => {
+            callback(new FileCopyError(err.message));
+        });
+    }
+);

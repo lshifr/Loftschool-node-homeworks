@@ -47,7 +47,7 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
         if (err) {
             cb(err)
         } else {
-            wrapper.wrap(ensureDir)(getNewDirForFile(filename), (err, dirpath) => {
+            ensureDir(getNewDirForFile(filename), (err, dirpath) => {
                 if (err) {
                     cb(err);
                 } else {
@@ -55,7 +55,7 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
                     if (verbose) {
                         console.log(`Copying file ${path.basename(filename)}`);
                     }
-                    wrapper.wrap(copyFile)(filename, newfile, err => {
+                    copyFile(filename, newfile, err => {
                         if (err) cb(err);
                     });
                 }

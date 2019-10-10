@@ -62,23 +62,24 @@ function traverse(filepath, cb) {
 **  Создает папку по имени, если папка не существует, и затем выполняет
 **  callback
 */
-const ensureDir = (dirpath, cb) => {
-    fsstat(dirpath, (err, stats) => {
-        if (err || !stats.isDirectory()) {
-            // Папка не существует. Создаем ее
-            fsmkdir(dirpath, {recursive: true}, err => {
-                if (err) {
-                    cb(err);
-                } else {
-                    cb(null, dirpath);
-                }
-            });
-        } else {
-            // Папка уже существует - просто выполняем callback
-            cb(null, dirpath);
-        }
+const ensureDir = wrapper.wrap(
+    (dirpath, cb) => {
+        fsstat(dirpath, (err, stats) => {
+            if (err || !stats.isDirectory()) {
+                // Папка не существует. Создаем ее
+                fsmkdir(dirpath, {recursive: true}, err => {
+                    if (err) {
+                        cb(err);
+                    } else {
+                        cb(null, dirpath);
+                    }
+                });
+            } else {
+                // Папка уже существует - просто выполняем callback
+                cb(null, dirpath);
+            }
+        });
     });
-};
 
 
 /*
