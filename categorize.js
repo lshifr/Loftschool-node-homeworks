@@ -1,12 +1,8 @@
 const path = require("path");
-const {copyFile} = require("./copy-file-async");
-const {traverse, ensureDir, deleteFolderRecursiveSync} = require("./dir-ops");
-let argv = require('yargs');
-const wrapper = require("./callwrapper");
+const {copyFile} = require("./file-operations/copy-file-async");
+const {traverse, ensureDir, deleteFolderRecursiveSync} = require("./file-operations/dir-ops");
 
-const defaultSource = __dirname + "/SampleFiles/Westerns";
-const defaultDestination = __dirname + "/SampleFiles/NewFiles";
-
+const wrapper = require("./common/callwrapper");
 
 const getFirstLetter = str => str.charAt(0).toUpperCase();
 
@@ -61,37 +57,4 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
     setTimeout(taskMonitor, 0);
 }
 
-argv = argv
-    .option('source', {
-        alias: 's',
-        description: 'Source folder'
-        })
-    .option('destination',{
-        alias: 'd',
-        description: 'Destination folder'
-    })
-    .option('verbose', {
-        alias: 'v',
-        type: 'boolean',
-        description: 'Run with verbose logging'
-    }).option('delete-source', {
-        alias: 'ds',
-        type: 'boolean',
-        description: 'Delete the source folder'
-    }).argv;
-
-const source = argv.source || defaultSource;
-const destination = argv.destination || defaultDestination;
-const deleteOriginalFolder = argv['delete-source'];
-const verbose = argv.verbose;
-
-
-categorizeFiles(
-    source,
-    destination,
-    {verbose, deleteOriginalFolder, defaultSource},
-    err => {
-        console.warn(`Something went wrong. The error was: ${err}`);
-        throw err;
-    }
-);
+module.exports = categorizeFiles;

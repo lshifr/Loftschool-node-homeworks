@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const wrapper = require("./callwrapper");
+const wrapper = require("../common/callwrapper");
 
 
 function traverse(filepath, cb) {
