@@ -62,6 +62,8 @@ function categorizeFiles(sourceDir, targetDir, options, cb) {
             });
         }
     });
+
+    // Запускаем монитор асинхронных задач
     setTimeout(taskMonitor, 0);
 }
 
