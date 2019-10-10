@@ -1,6 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
+const wrapper = require("./callwrapper");
+
+
 function traverse(filepath, cb) {
     let innerError = false;
     let innercb = (error, arg) => {
@@ -9,11 +12,11 @@ function traverse(filepath, cb) {
         }
         cb(error, arg)
     };
-    fs.stat(filepath, (err, stats) => {
+    wrapper.wrap(fs.stat)(filepath, (err, stats) => {
         if (err) {
             cb(err);
         } else if (stats.isDirectory()) {
-            fs.readdir(filepath, (err, files) => {
+            wrapper.wrap(fs.readdir)(filepath, (err, files) => {
                 if (err) {
                     cb(err);
                 } else {
@@ -21,7 +24,7 @@ function traverse(filepath, cb) {
                         if(innerError){
                             break;
                         }
-                        traverse(path.join(filepath, filename), innercb);
+                        wrapper.wrap(traverse)(path.join(filepath, filename), innercb);
                     }
                 }
             });
@@ -35,9 +38,9 @@ function traverse(filepath, cb) {
 
 
 const ensureDir = (dirpath, cb) => {
-    fs.stat(dirpath, (err, stats) => {
+    wrapper.wrap(fs.stat)(dirpath, (err, stats) => {
         if (err || !stats.isDirectory()) {
-            fs.mkdir(dirpath, {recursive: true}, err => {
+            wrapper.wrap(fs.mkdir)(dirpath, {recursive: true}, err => {
                 if (err) {
                     cb(err);
                 } else {
@@ -50,5 +53,21 @@ const ensureDir = (dirpath, cb) => {
     });
 };
 
+const deleteFolderRecursiveSync = function(path) {
+    var files = [];
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursiveSync(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
 
-module.exports = {traverse, ensureDir};
+
+module.exports = {traverse, ensureDir, deleteFolderRecursiveSync};
