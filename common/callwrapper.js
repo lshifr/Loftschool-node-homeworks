@@ -18,7 +18,7 @@
 **  завершения предыдущего для вызова следующего).
 */
 
-function asyncCallWrapper(){
+function asyncCallWrapper() {
 
     const uuid = (() => {
         ctr = 0;
@@ -27,14 +27,18 @@ function asyncCallWrapper(){
 
     let tasks = {}; // Реестр асинхронных вызовов
 
-    const wrap  = (func) => function(){
+    const wrap = (func) => function () {
         const callID = uuid(); // Уникальный идентификатор вызова
         tasks[callID] = 1; // Регистрируем вызов. 1 - Просто формальность, значение может быть любым
         const args = Array.from(arguments);
         const callback = args.pop(); // callback всегда идет последним
-        const wrappedCallback = function(){ // Создаем обертку для callback
-            const result = callback(...arguments);
-            delete tasks[callID]; // Удаляем вызов из реестра
+        const wrappedCallback = function () { // Создаем обертку для callback
+            let result;
+            try {
+                result = callback(...arguments);
+            } finally {
+                delete tasks[callID]; // Удаляем вызов из реестра
+            }
             return result;
         };
         //Выполняем исходную функцию с преобразованным callback
@@ -43,10 +47,10 @@ function asyncCallWrapper(){
 
 
     const createTaskMonitor = (monitor, callback, interval = 0) => {
-        const taskMonitor = () =>  {
+        const taskMonitor = () => {
             const taskCount = Object.keys(tasks).length; // Сколько осталось вызовов в реестре
             monitor(taskCount);
-            if(taskCount > 0 ){
+            if (taskCount > 0) {
                 setTimeout(taskMonitor, interval); // Возобновлям проверку на следующей итерации событийного цикла
             } else {
                 callback(); // Все (зарегистрированные) асинхронные вызовы завершены
