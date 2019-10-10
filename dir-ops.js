@@ -21,7 +21,7 @@ function traverse(filepath, cb) {
                         if(innerError){
                             break;
                         }
-                        traverse(path.join(filepath, filename), innercb)
+                        traverse(path.join(filepath, filename), innercb);
                     }
                 }
             });
@@ -44,6 +44,8 @@ const ensureDir = (dirpath, cb) => {
                     cb(null, dirpath);
                 }
             });
+        } else {
+            cb(null, dirpath);
         }
     });
 };
