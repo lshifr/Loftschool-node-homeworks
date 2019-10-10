@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/lshifr/Loftschool-node-homeworks/issues"
   },
-  "homepage": "https://github.com/lshifr/Loftschool-node-homeworks#readme"
+  "homepage": "https://github.com/lshifr/Loftschool-node-homeworks#readme",
+  "dependencies": {
+    "yargs": "^14.2.0"
+  }
 }
