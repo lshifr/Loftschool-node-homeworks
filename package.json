@@ -1,0 +1,20 @@
+{
+  "name": "loft-node-hw2",
+  "version": "1.0.0",
+  "description": "Homework #2 / 2, LoftSchool node.js course",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lshifr/Loftschool-node-homeworks.git"
+  },
+  "author": "Leonid Shifrin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lshifr/Loftschool-node-homeworks/issues"
+  },
+  "homepage": "https://github.com/lshifr/Loftschool-node-homeworks#readme",
+  "dependencies": {}
+}
