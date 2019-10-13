@@ -35,9 +35,8 @@ const verbose = argv.verbose;
 categorizeFiles(
     source,
     destination,
-    {verbose, deleteOriginalFolder, defaultSource},
-    err => {
-        console.warn(`Something went wrong. The error was: ${err}`);
-        throw err;
-    }
-);
+    {verbose, deleteOriginalFolder, defaultSource}
+).catch(err => {
+    console.warn(`Something went wrong. The error was: ${err}`);
+    throw err;
+})
