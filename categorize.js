@@ -35,7 +35,7 @@ const traverse = async (dir, fileFunc, dirFunc) => {
         const fullFileName = path.join(dir, file);
         return fsPromises.stat(fullFileName).then(stats => {
             if (stats.isDirectory()) {
-                let result = traverse(fullFileName, fileFunc);
+                let result = traverse(fullFileName, fileFunc, dirFunc);
                 if (dirFunc) {
                     // Post-order traversal
                     result = result.then(() => dirFunc(fullFileName));
@@ -56,7 +56,7 @@ const traverse = async (dir, fileFunc, dirFunc) => {
 **  Aсинхронное удаление каталога любой вложенности
 */
 const rmDirRec = async dir => {
-    await traverse(dir, null, fsPromises.rmdir);
+    await traverse(dir, fsPromises.unlink, fsPromises.rmdir);
     return fsPromises.rmdir(dir);
 };
 
